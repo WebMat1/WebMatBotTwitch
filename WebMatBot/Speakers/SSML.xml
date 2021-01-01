@@ -1,0 +1,7 @@
+﻿<speak version="1.0" xmlns="https://www.w3.org/2001/10/synthesis" xml:lang="en-US">
+  <voice name="{voice}">
+    <prosody rate="0.45">
+      {alert}<break time="350ms"/>{text}<break time="50ms"/> {posmsg}
+    </prosody>
+  </voice>
+</speak>

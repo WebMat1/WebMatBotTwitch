@@ -1,0 +1,68 @@
+﻿@page "/subtitle"
+@inject IJSRuntime jsRuntime;
+@inject NavigationManager NavigationManager
+@using Microsoft.AspNetCore.SignalR.Client;
+
+<div class="d-flex justify-content-center" style="background-color:transparent;">
+    @if (running)
+    {
+        <h2 class="text-warning text-center">@SubtitleMessage</h2>
+    }
+</div>
+
+@code{
+    bool running { get; set; } = false;
+
+    public HubConnection connection;
+
+    public string SubtitleMessage { get; set; } = "";
+    public DateTime LastUpdateSubTitleMessage { get; set; } = DateTime.Now;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            running = true;
+
+            var dotNetReference = DotNetObjectReference.Create(this);
+            await jsRuntime.InvokeVoidAsync("TurnOnRecognition", dotNetReference);
+
+            connection = new HubConnectionBuilder()
+                        .WithUrl(NavigationManager.ToAbsoluteUri("/HubConnection"))
+                        .WithAutomaticReconnect()
+                        .Build();
+
+            connection.On<string>("receiveTranslated", (msg) => receiveTranslated(msg));
+
+            await connection.StartAsync();
+
+            await base.OnAfterRenderAsync(firstRender);
+        }
+    }
+
+    [JSInvokable("receiveTalk")]
+    public async Task receiveTalk(string captured)
+    {
+        await connection.InvokeAsync("ToTranslate", captured);
+    }
+
+    public async Task receiveTranslated(string translated)
+    {
+        SubtitleMessage = translated;
+        LastUpdateSubTitleMessage = DateTime.Now;
+
+        StateHasChanged();
+
+        await InvokeAsync(async () =>
+        {
+            await Task.Delay(5000);
+            if (DateTime.Now > LastUpdateSubTitleMessage.AddSeconds(5))
+                SubtitleMessage = "";
+            StateHasChanged();
+        });
+
+        
+
+        //await jsRuntime.InvokeVoidAsync("console.log", translated);
+    }
+}

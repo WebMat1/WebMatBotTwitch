@@ -1,0 +1,65 @@
+﻿@page "/"
+@inject HttpClient http
+@inject NavigationManager nav
+
+<h1>Hello, world!</h1>
+
+<input placeholder="Digite o comando" @onkeyup="(eventArg) => checkCommand(eventArg)" @onkeyup:preventDefault="true" class="form-group col-9" @bind="Icommand" @bind:event="onchange"/>
+
+<button type="button" class="btn btn-info col-2" @onclick="() => SendCommand()">Enviar</button>
+
+<div class="d-flex justify-content-center">
+    <h2 class="text-info text-center">@Iresult</h2>
+</div>
+
+@code{
+    string Icommand { get; set; }
+    string Iresult { get; set; }
+
+    List<string> recentCommands = new List<string>();
+    int recentIndex { get; set; }
+
+    async void SendCommand()
+    {
+        var response = await http.GetAsync($"Command/{Icommand}");
+        if (response.IsSuccessStatusCode)
+        {
+            Iresult = await response.Content.ReadAsStringAsync();
+
+            recentCommands.Add(Icommand);
+            recentIndex = recentCommands.Count;
+
+            Icommand = "";
+            StateHasChanged();
+        }
+
+    }
+
+    void checkCommand(KeyboardEventArgs eventArgs)
+    {
+        if (!(recentCommands.Count <= 0))
+        {
+            bool pressed = false;
+
+            if (eventArgs.Key == "ArrowUp")
+            {
+                recentIndex -= 1;
+                pressed = true;
+            }
+
+            if (eventArgs.Key == "ArrowDown")
+            {
+                recentIndex += 1;
+                pressed = true;
+            }
+
+            if (recentIndex < 0 && pressed)
+                recentIndex = recentCommands.Count - 1;
+
+            if (recentIndex >= recentCommands.Count && pressed)
+                recentIndex = 0;
+
+            if (pressed) Icommand = recentCommands[recentIndex];
+        }
+    }
+}
