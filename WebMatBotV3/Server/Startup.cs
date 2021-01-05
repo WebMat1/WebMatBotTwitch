@@ -65,6 +65,7 @@ namespace WebMatBotV3.Server
                 endpoints.MapHub<Hubs.CannonHub>("/HubCannon");
             });
 
+            WebMatBot.Program.Start();
 
             //hostApp.ApplicationStopping.Register(async () => { 
             //    await Services.WebMatBotService.StopAsync();
