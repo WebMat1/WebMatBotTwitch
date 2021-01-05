@@ -35,7 +35,7 @@ namespace WebMatBot
                 //await Core.Respond(item); // maximo de 500 caracteres por mensagem na twitch
             }
 
-            await IrcEngine.Respond(user + ", confira a aba de sussurros...");
+            await IrcEngine.Respond("Por favor, confira a aba de sussurros...", user);
         }
     }
 }

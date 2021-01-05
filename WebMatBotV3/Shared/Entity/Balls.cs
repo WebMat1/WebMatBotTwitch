@@ -62,6 +62,10 @@ namespace WebMatBotV3.Shared.Entity
             mercurio, // 10
             thanos, // 11
             woman, // 12
+            fireball, // 13
+            eight, // 14
+            moon, // 15
+
         }
     }
 }

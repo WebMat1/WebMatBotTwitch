@@ -30,7 +30,7 @@ namespace WebMatBot
 
         public static async Task Speak(string textToSpeech, string user,Languages lang)
         {
-            if (!await SpeakerCore.CheckStatus() || config == null) return;
+            if (!await SpeakerCore.CheckStatus(user) || config == null) return;
 
             Speaker spk = Speakers.FirstOrDefault(q => q.Language == lang);
 
@@ -51,7 +51,7 @@ namespace WebMatBot
 
             var result = await synthesizer.SpeakSsmlAsync(ssml);
 
-            await AutomaticTranslator.Translate(textToSpeech);
+            await AutomaticTranslator.Translate(textToSpeech, user);
         }
 
         public static async Task SpeakTranslate(string cmd, string user)
@@ -62,9 +62,9 @@ namespace WebMatBot
             {
                 var Target = trg.Value;
 
-                msg = await TranslateCore(msg, false, Target);
+                msg = await TranslateCore(msg, false, Target, user);
 
-                await TasksQueueOutput.QueueAddSpeech(async () => await Speak(msg, user,Target));
+                await TasksQueueOutput.QueueAddSpeech(async () => await Speak(msg, user,Target), user);
             }
         }
     }

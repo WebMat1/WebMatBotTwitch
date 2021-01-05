@@ -45,14 +45,14 @@ namespace WebMatBot.Games
 
         public static async Task ShotCommand(string cmd,string user)
         {
-            if (!await CheckStatus())
+            if (!await CheckStatus(user))
                 return;
 
             #region verifica se o usuario tem balas para atirar
             //verificar se está apto a atirar
             if (!CanShot(user))
             {
-                await IrcEngine.Respond("Ops... Me Desculpe " + user + ", se você quiser brincar com o canhão, primeiro deve se eleger; Eleções são feitas Por pontos do canal ou donations (verifique com o streamer)!!!");
+                await IrcEngine.Respond("Ops... Me Desculpe... Se você quiser brincar com o canhão, primeiro deve se eleger; Eleções são feitas Por pontos do canal ou donations (verifique com o streamer)!!!", user);
                 return;
             }
             #endregion
@@ -73,7 +73,7 @@ namespace WebMatBot.Games
             {
                 if (CoolDownShot[user].AddSeconds(TimeCoolDownShot) >= DateTime.Now)
                 {
-                    await IrcEngine.Respond("Ops... @" + user + ", rápido demais... Dê uma respirada, coleguinha!!!");
+                    await IrcEngine.Respond("Ops... Rápido demais... Dê uma respirada, coleguinha!!!", user);
                     return;
                 }
                 //atualiza lista de cooldown
@@ -92,14 +92,14 @@ namespace WebMatBot.Games
         }
         public static async Task SprayCommand(string cmd, string user)
         {
-            if (!await CheckStatus())
+            if (!await CheckStatus(user))
                 return;
 
             #region verifica se o usuario tem balas para atirar
             //verificar se está apto a atirar
             if (!CanShot(user))
             {
-                await IrcEngine.Respond("Ops... Me Desculpe " + user + ", se você quiser brincar com o canhão, primeiro deve se eleger; Eleções são feitas Por pontos do canal ou donations (verifique com o streamer)!!!");
+                await IrcEngine.Respond("Ops... Me Desculpe... Se você quiser brincar com o canhão, primeiro deve se eleger; Eleções são feitas Por pontos do canal ou donations (verifique com o streamer)!!!", user);
                 return;
             }
             #endregion
@@ -120,7 +120,7 @@ namespace WebMatBot.Games
             {
                 if (CoolDownShot[user].AddSeconds(TimeCoolDownShot*2.5) >= DateTime.Now)
                 {
-                    await IrcEngine.Respond("Ops... @" + user + ", rápido demais... Quando se usa !Spray o tempo de coolDown é um pouquinho maior... Sorry... marcob3Like marcob3Like ");
+                    await IrcEngine.Respond("Ops... Rápido demais... Quando se usa !Spray o tempo de coolDown é um pouquinho maior... Sorry... marcob3Like marcob3Like ", user);
                     return;
                 }
                 //atualiza lista de cooldown
@@ -142,7 +142,7 @@ namespace WebMatBot.Games
             #region Verifica se é sub
             if (!title.Permissions.Contains(Permissions.Subscriber))
             {
-                await IrcEngine.Respond("@"+user+"... Desculpe o resgate é apenas permitido por quem está inscrito no canal... TehePelo");
+                await IrcEngine.Respond("Desculpe o resgate é apenas permitido por quem está inscrito no canal... TehePelo", user);
                 return;
             }
             #endregion
@@ -151,7 +151,7 @@ namespace WebMatBot.Games
             //verificar se está apto a atirar
             if (!await CanSubRedemption(user))
             {
-                await IrcEngine.Respond("Ops... Me Desculpe " + user + ", seu resgate de Subscriber já foi efetuado nessa Season. Tente na Proxima season...");
+                await IrcEngine.Respond("Ops... Me Desculpe... Seu resgate de Subscriber já foi efetuado nessa Season. Tente na Proxima season...", user);
                 return;
             }
             #endregion
@@ -250,16 +250,16 @@ namespace WebMatBot.Games
             await MoveTarget(0,y);
         }
 
-        public static async Task<bool> CheckStatus()
+        public static async Task<bool> CheckStatus(string user)
         {
             if (State == Status.Disabled)
             {
-                await IrcEngine.Respond("O Cannon Game está off... peça o streamer para acioná-lo...");
+                await IrcEngine.Respond("O Cannon Game está off... peça o streamer para acioná-lo...", user);
                 return false;
             }
             else if(State == Status.Paused)
             {
-                await IrcEngine.Respond("O Cannon Game está pausado... Provavelmente o nosso Balls Store esteja rolando... Confira as promoções de Skins e divirta-se...");
+                await IrcEngine.Respond("O Cannon Game está pausado... Provavelmente o nosso Skins Store esteja rolando... Confira as promoções de Skins e divirta-se...", user);
                 return false;
             }
             else
@@ -308,7 +308,7 @@ namespace WebMatBot.Games
             }
             else
             {
-                await IrcEngine.Respond(result);
+                await IrcEngine.Respond(result, user);
             }
         }
 

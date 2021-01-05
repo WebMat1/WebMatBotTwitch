@@ -16,7 +16,7 @@ namespace WebMatBot
 
         public static async Task Speak(string textToSpeech, string user,bool wait = true, string speakRate = "0")
         {
-            if (!await CheckStatus()) return;
+            if (!await CheckStatus(user)) return;
 
             Sounds.RandomTrollSound();
 
@@ -30,7 +30,7 @@ namespace WebMatBot
             $speak.Rate = {speakRate};
             $speak.Speak(""{textToSpeech}"");"); // Embedd text  
 
-            await AutomaticTranslator.Translate(textToSpeech);
+            await AutomaticTranslator.Translate(textToSpeech, user);
         }
 
         public static void ExecutePowerShell(string command)
@@ -83,11 +83,11 @@ namespace WebMatBot
             $speak.Speak(""{text}"");"); // Embedd text  
         }
 
-        public static async Task<bool> CheckStatus()
+        public static async Task<bool> CheckStatus(string user)
         {
             if (State == Status.Disabled)
             {
-                await IrcEngine.Respond("O Speaker está off... peça o streamer para acioná-lo...");
+                await IrcEngine.Respond("O Speaker está off... peça o streamer para acioná-lo...", user);
                 return false;
             }
             else

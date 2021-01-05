@@ -19,10 +19,10 @@ namespace WebMatBot.Core
 
         private readonly static IDictionary<string, Action<IDictionary<string, object>>> Topics = new Dictionary<string, Action<IDictionary<string, object>>> 
         {
-            { $"channel-bits-events-v1.{Parameters.ChannelID}", async (line) => { await BitsEnter(line); await TasksQueueOutput.QueueAddSpeech( async() => await AudioVisual.Party("", Parameters.User)); } },
-            { $"channel-bits-badge-unlocks.{Parameters.ChannelID}" ,async (line) => await TasksQueueOutput.QueueAddSpeech( async() => await AudioVisual.Party("", Parameters.User)) } ,
+            { $"channel-bits-events-v1.{Parameters.ChannelID}", async (line) => { await BitsEnter(line); await TasksQueueOutput.QueueAddSpeech( async() => await AudioVisual.Party("", Parameters.User), ""); } },
+            { $"channel-bits-badge-unlocks.{Parameters.ChannelID}" ,async (line) => await TasksQueueOutput.QueueAddSpeech( async() => await AudioVisual.Party("", Parameters.User), "") } ,
             { $"channel-points-channel-v1.{Parameters.ChannelID}", async (line) => await ChannelPoints(line) },
-            { $"channel-subscribe-events-v1.{Parameters.ChannelID}",async (line) => { await SubEnter(line); await TasksQueueOutput.QueueAddSpeech( async() => await AudioVisual.Party("", Parameters.User)); } },
+            { $"channel-subscribe-events-v1.{Parameters.ChannelID}",async (line) => { await SubEnter(line); await TasksQueueOutput.QueueAddSpeech( async() => await AudioVisual.Party("", Parameters.User), ""); } },
         };
         private readonly static string Auth = Parameters.OAuth.Split(":")[1]; //https://twitchtokengenerator.com/
 
@@ -142,10 +142,25 @@ namespace WebMatBot.Core
 
         public static async Task SubEnter(IDictionary<string, object> json)
         {
-            //var data = json["data"];
-            var user = ((Newtonsoft.Json.Linq.JObject)json).GetValue("user_name").ToString();
+            try
+            {
+                var user = json["user_name"].ToString();
+                //var data = json["data"];
+                
 
-            await Games.Cannon_Store.SubEnterResource(user);
+                await Games.Cannon_Store.SubEnterResource(user);
+            }catch(Exception excpt)
+            {
+                Console.WriteLine(excpt.Message);
+
+                //var data = json["data"];
+
+                var user = ((Newtonsoft.Json.Linq.JObject)json).GetValue("user_name").ToString();
+                await Games.Cannon_Store.SubEnterResource(user);
+
+
+                
+            }
         }
 
         private static async Task BitsEnter(IDictionary<string, object> json)
@@ -169,7 +184,7 @@ namespace WebMatBot.Core
 
             if (title.ToLower().Contains("xandão"))
             {
-                await TasksQueueOutput.QueueAddSpeech(async () => await AudioVisual.Xandao("", Parameters.User));
+                await TasksQueueOutput.QueueAddSpeech(async () => await AudioVisual.Xandao("", Parameters.User),"");
             }
 
             //to do -> pegar quantidade comprada em cada redemption

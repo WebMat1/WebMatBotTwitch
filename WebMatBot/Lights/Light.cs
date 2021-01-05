@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Text;
@@ -10,15 +10,41 @@ namespace WebMatBot.Lights
 {
     public class Light
     {
-        public static string ipLight = "192.168.0.15";
-        private static Device device { get; set; } = new Device(ipLight, autoConnect: true);
+        public enum Status
+        {
+            Enabled,
+            Disabled
+        }
+
+        private static Status _State = Status.Disabled;
+        public static Status State { get => _State;
+            set
+            {
+                _State = value;
+                if (_State == Status.Enabled)
+                    Start();
+            }
+        }
+
+        public static string ipLight = "192.168.0.14";
+        private static Device device { get; set; } 
 
         public static async Task Start()
         {
             try
             {
-                if (device.IsConnected) await device.TurnOn();
-                await Random("");
+                if (State == Status.Enabled)
+                {
+                    device = new Device(ipLight, autoConnect: false);
+                    Console.WriteLine(device.FirmwareVersion);
+                    if (device.IsConnected)
+                    {
+                        await device.TurnOn();
+                        await Random("");
+                    }
+                    else
+                        await device.Connect();
+                }
             }
             catch (Exception excpt)
             {
@@ -28,6 +54,9 @@ namespace WebMatBot.Lights
 
         private static async Task Random(string user)
         {
+            if (!await CheckStatus(user))
+                return;
+
             int r = 0, g = 0, b = 0;
 
             while (r == 0 && b == 0 && g == 0)
@@ -43,6 +72,9 @@ namespace WebMatBot.Lights
 
         public static async Task Command(string cmd, string user)
         {
+            if (!await CheckStatus(user))
+                return;
+
             bool founded = false;
 
             cmd = cmd.Trim().Replace("\r\n", "");
@@ -124,8 +156,11 @@ namespace WebMatBot.Lights
             }
         }
 
-        public static async Task StartLightFlow()
+        public static async Task StartLightFlow(string user)
         {
+            if (!await CheckStatus(user))
+                return;
+
             if (device.IsConnected)
             {
                 Random rand = new Random();
@@ -145,8 +180,11 @@ namespace WebMatBot.Lights
             }
         }
 
-        public static async Task StartLightFlowAnthem()
+        public static async Task StartLightFlowAnthem(string user)
         {
+            if (!await CheckStatus(user))
+                return;
+
             if (device.IsConnected)
             {
                 Random rand = new Random();
@@ -168,7 +206,18 @@ namespace WebMatBot.Lights
 
         public static async Task Stop()
         {
-            if (device.IsConnected) await device.TurnOff();
+            if (device.IsConnected)
+                await device.TurnOff();
+        }
+
+        public static async Task<bool> CheckStatus(string user)
+        {
+            if (State == Status.Enabled)
+                return true;
+            else
+                await IrcEngine.Respond("As alterações de luzes estão desabilitadas, por favor peça o streamer para ativa-las...", user);
+
+            return false;
         }
     }
 }

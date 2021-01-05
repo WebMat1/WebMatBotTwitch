@@ -14,21 +14,10 @@ namespace WebMatBotV3.Server.Controllers
     {
         private readonly DataContext dataContext;
 
-        public CommandController(DataContext _dataContext)
-        {
-            dataContext = _dataContext;
-        }
-
         [HttpGet("{command}")]
         public async Task<string> Get(string command)
         {
             return await WebMatBot.Program.SendCommand(command);
-        }
-
-        [HttpGet("[action]")]
-        public async Task<IActionResult> Test()
-        {
-            return Ok(dataContext.Seasons.FirstOrDefault());
         }
     }
 }

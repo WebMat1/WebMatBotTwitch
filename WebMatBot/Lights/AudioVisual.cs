@@ -13,7 +13,7 @@ namespace WebMatBot.Lights
             try
             {
                 //sem await para não ter q parar as luzes e depois falar o texto
-                Light.StartLightFlow();
+                Light.StartLightFlow(user);
 
                 Sounds.RandomPartySound();
 
@@ -29,7 +29,7 @@ namespace WebMatBot.Lights
         public static async Task Anthem(string txt, string user)
         {
             //sem await para não ter q parar as luzes e depois falar o texto
-            Light.StartLightFlowAnthem();
+            Light.StartLightFlowAnthem(user);
 
             Random random = new Random();
             var index = random.Next(Enum.GetValues(typeof(Translate.Languages)).Length);
@@ -47,7 +47,7 @@ namespace WebMatBot.Lights
             try
             {
                 //sem await para não ter q parar as luzes e depois falar o texto
-                Light.StartLightFlow();
+                Light.StartLightFlow(user);
 
                 Sounds.Xandao();
 

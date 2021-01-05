@@ -14,18 +14,18 @@ namespace WebMatBot
         private static int LimitCharacters = 16000; //limite de caracteres diarios.
         private static TranslationClient client = TranslationClient.CreateFromApiKey(Parameters.GoogleTranslateApiKey);
 
-        public static async Task<string> TranslateText(string stringRaw, bool respond)
+        public static async Task<string> TranslateText(string stringRaw, bool respond, string user)
         {
             string stringToTranslate;
             Languages? src, trg;
             if (!GetLanguages(stringRaw, out src, out trg, out stringToTranslate))
                 return stringRaw;
 
-            return await TranslateCore(stringToTranslate, respond, trg.Value, src);
+            return await TranslateCore(stringToTranslate, respond, trg.Value, user ,src);
             
         }
 
-        public static async Task<string> TranslateCore(string textToTranslate,bool respond, Languages Trg, Languages? Src = null)
+        public static async Task<string> TranslateCore(string textToTranslate,bool respond, Languages Trg, string user, Languages? Src = null)
         {
             //checagem de limites
             if (!CheckLimits(textToTranslate)) return "Limite de tradução gratuita diária estourado.";
@@ -37,7 +37,7 @@ namespace WebMatBot
 
             //Console.WriteLine(response.TranslatedText);
 
-            if (respond) await IrcEngine.Respond(response.TranslatedText);
+            if (respond) await IrcEngine.Respond(response.TranslatedText, user);
 
             return response.TranslatedText;
         }

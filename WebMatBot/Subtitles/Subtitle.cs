@@ -23,7 +23,7 @@ namespace WebMatBot
             IsActive = false;
         }
 
-        public static async Task Command(string cmd)
+        public static async Task Command(string cmd, string user)
         {
             cmd = cmd.ToLower().Trim();
 
@@ -40,7 +40,7 @@ namespace WebMatBot
                     IsActive = true;
                     TargetLanguage = trg.Value;
 
-                    await IrcEngine.Respond("A Legenda está traduzindo para " + TargetLanguage.ToString() + "...");
+                    await IrcEngine.Respond("A Legenda está traduzindo para " + TargetLanguage.ToString() + "...", user);
                 }
             }
             

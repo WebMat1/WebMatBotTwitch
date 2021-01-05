@@ -11,16 +11,16 @@ namespace WebMatBot.Core
 
         private static IList<Func<Task>> Queue = new List<Func<Task>>();
 
-        public static async Task QueueAddSpeech(Func<Task> action)
+        public static async Task QueueAddSpeech(Func<Task> action, string user)
         {
-            if (await SpeakerCore.CheckStatus())
+            if (await SpeakerCore.CheckStatus(user))
                 lock (Queue)
                     Queue.Add(action);
         }
 
-        public static async Task QueueAddLight(Func<Task> action)
+        public static async Task QueueAddLight(Func<Task> action, string user)
         {
-            //if (await SpeakerCore.CheckStatus())
+            if (await Lights.Light.CheckStatus(user))
             lock (Queue)
                 Queue.Add(action);
         }

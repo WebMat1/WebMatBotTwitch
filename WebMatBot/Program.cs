@@ -141,6 +141,21 @@ namespace WebMatBot
                 result = "Cannon now is: " + (Games.Cannon.State == Games.Cannon.Status.Enabled ? "Active" : "Deactivated");
             }
 
+            if (line.ToLower().Contains("!setlight"))
+            {
+                switch (line.Split(" ")[1])
+                {
+                    case "true":
+                        Lights.Light.State = Lights.Light.Status.Enabled;
+                        break;
+                    case "false":
+                        Lights.Light.State = Lights.Light.Status.Disabled;
+                        break;
+                }
+
+                result = "Lights now are: " + (Lights.Light.State == Lights.Light.Status.Enabled ? "Active" : "Deactivated");
+            }
+
             if (line.ToLower().Contains("!setiplight"))
             {
                 Lights.Light.ipLight = (line.Split(" ")[1]);

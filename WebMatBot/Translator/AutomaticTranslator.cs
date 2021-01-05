@@ -19,7 +19,7 @@ namespace WebMatBot
             Disabled
         }
 
-        public static async Task Command (string cmd)
+        public static async Task Command (string cmd, string user)
         {
             cmd = cmd.ToLower().Trim();
 
@@ -36,17 +36,17 @@ namespace WebMatBot
                     status = Status.Enabled;
                     Target = trg.Value;
 
-                    await IrcEngine.Respond("O tradutor está automatico para " + Target.ToString() + "...");
+                    await IrcEngine.Respond("O tradutor está automatico para " + Target.ToString() + "...", user);
                 }
             }
         }
 
-        public static async Task Translate(string text)
+        public static async Task Translate(string text, string user)
         {
             if (status == Status.Disabled)
                 return;
 
-            await TranslateCore(text, true, Target);
+            await TranslateCore(text, true, Target, user);
 
         }
     }

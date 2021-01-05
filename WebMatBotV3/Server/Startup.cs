@@ -66,12 +66,10 @@ namespace WebMatBotV3.Server
             });
 
 
-            hostApp.ApplicationStopping.Register(async () => { 
-                await Services.WebMatBotService.StopAsync();
-                await Task.Delay(5000);
-            });
-
-            WebMatBot.Program.Start();
+            //hostApp.ApplicationStopping.Register(async () => { 
+            //    await Services.WebMatBotService.StopAsync();
+            //    await Task.Delay(5000);
+            //});
         }
     }
 }

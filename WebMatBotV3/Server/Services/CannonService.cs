@@ -687,7 +687,7 @@ namespace WebMatBotV3.Server.Services
 
                 if (ListToSale.Count > 4) ListToSale = ListToSale.Take(4).ToList();
 
-            } while (ListToSale == null || ListToSale.Count != 4);
+            } while (ListToSale == null || ListToSale.Count != 4 /*|| !(ListToSale.Where(q=>q.Type == Balls.TypeBalls.fireball).Count() > 0)*/);
 
             //retorna apenas 4 itens pra oferta
 

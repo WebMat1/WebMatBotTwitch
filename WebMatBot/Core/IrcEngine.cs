@@ -88,11 +88,11 @@ namespace WebMatBot
             };
         }
 
-        public static async Task Respond(string msg)
+        public static async Task Respond(string msg, string user = "")
         {
             try
             {
-                await Send("PRIVMSG #" + Parameters.User + " : MrDestructoid " + msg, CancellationToken.None);
+                await Send("PRIVMSG #" + Parameters.User + " : MrDestructoid " + "@" + user + "... " + msg, CancellationToken.None);
             }
             catch (Exception except)
             {
@@ -124,7 +124,7 @@ namespace WebMatBot
             var filter = input.ToLower();
             if (badWords.Any(s => filter.Contains(s)))
             {
-                await Respond("Sua Mensagem contém palavras impróprias e não será repassada ao nosso bot!");
+                await Respond("Sua Mensagem contém palavras impróprias e não será repassada ao nosso bot!", input.Split(" ")[1].Split("!")[0].Replace(":", ""));
                 await Send(@"PRIVMSG #" + Parameters.User + " :/timeout " + input.Split(" ")[1].Split("!")[0].Replace(":", "") + " 1m", CancellationToken.None);
                 return false;
             }
@@ -160,9 +160,9 @@ namespace WebMatBot
             if (isDone)
             {
                 //limite de caracteres 300
-                if (input.Length > 300)
+                if (input.Length > 400)
                 {
-                    await Respond("Sua Mensagem contém muitos caracteres e não será repassada ao nosso bot!");
+                    await Respond("Sua Mensagem contém muitos caracteres e não será repassada ao nosso bot!", input.Split("!")[0].Replace(":", ""));
                     return;
                 }
                 else
@@ -192,7 +192,7 @@ namespace WebMatBot
             //is there some rate lower than 35%
             if (!MatchRate.Any(q => q.Value <= 0.51d))
             {
-                await Respond("@" + input.ToLower().Split("!")[0].Replace(":", "") + " , Não entendi o seu comando, tente !Exclamação para obter a lista de todos os comandos...");
+                await Respond("Não entendi o seu comando, tente !Exclamação para obter a lista de todos os comandos...", input.ToLower().Split("!")[0].Replace(":", ""));
                 return;
             }
             else
@@ -206,14 +206,14 @@ namespace WebMatBot
                 {
                     if (shouldBeExact)
                     {
-                        await Respond("@" + user + " , O comando " + command + " está incorreto; " + arrayMinimum.ElementAt(0).Key.Description);
+                        await Respond("O comando " + command + " está incorreto; " + arrayMinimum.ElementAt(0).Key.Description, user);
                     }
                     else
                     {
                         var Tinput = input.ToLower().Split(command)[1];
                         var Tuser = input.ToLower().Split("!")[0].Replace(":", "");
 
-                        await Respond("@" + Tuser + " , Seu commando foi corrigido para " + arrayMinimum.ElementAt(0).Key.Key + ", tente !Exclamação para obter a lista de todos os comandos...");
+                        await Respond("Seu commando foi corrigido para " + arrayMinimum.ElementAt(0).Key.Key + ", tente !Exclamação para obter a lista de todos os comandos...", Tuser);
 
                         //verificar se tem permissões suficientes para executar o comando
                         if (userTitle == null || await Commands.CheckPermissions(arrayMinimum.ElementAt(0).Key, userTitle))
@@ -223,7 +223,7 @@ namespace WebMatBot
                 }
                 else
                 {
-                    string text = "@" + input.ToLower().Split("!")[0].Replace(":", "") + " , Não entendi o seu comando, não seria ";
+                    string text = "Não entendi o seu comando, não seria ";
                     foreach (var item in arrayMinimum)
                     {
                         text += item.Key.Key + " ou ";
@@ -231,7 +231,7 @@ namespace WebMatBot
 
                     text += "tente !Exclamação para ver todos os comandos...";
 
-                    await Respond(text);
+                    await Respond(text, input.ToLower().Split("!")[0].Replace(":", ""));
                 }
             }
         }
@@ -249,7 +249,7 @@ namespace WebMatBot
                 {
                     await AudioVisual.Party("", Parameters.User);
                     await SpeakerCore.Speak("Muito obrigado, " + raider, Parameters.User);
-                });
+                }, "");
 
         }
 

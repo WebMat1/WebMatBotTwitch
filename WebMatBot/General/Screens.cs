@@ -10,9 +10,9 @@ namespace WebMatBot
     {
         public static bool isActive { get; set; } = false; //inactivated
 
-        public static async Task VSCode()
+        public static async Task VSCode(string user)
         {
-            if (!await CheckStatus())
+            if (!await CheckStatus(user))
                 return;
 
             InputSimulator input = new InputSimulator();
@@ -22,10 +22,10 @@ namespace WebMatBot
 
             return ;
         }
-        public static async Task Browser()
+        public static async Task Browser(string user)
         {
 
-            if (!await CheckStatus())
+            if (!await CheckStatus(user))
                 return;
 
             InputSimulator input = new InputSimulator();
@@ -35,10 +35,10 @@ namespace WebMatBot
 
             return ;
         }
-        public static async Task VS()
+        public static async Task VS(string user)
         {
 
-            if (!await CheckStatus())
+            if (!await CheckStatus(user))
                 return;
 
             InputSimulator input = new InputSimulator();
@@ -48,10 +48,10 @@ namespace WebMatBot
 
             return ;
         }
-        public static async Task Kitchen()
+        public static async Task Kitchen(string user)
         {
 
-            if (!await CheckStatus())
+            if (!await CheckStatus(user))
                 return;
 
             InputSimulator input = new InputSimulator();
@@ -61,10 +61,10 @@ namespace WebMatBot
 
             return;
         }
-        public static async Task Chat()
+        public static async Task Chat(string user)
         {
 
-            if (!await CheckStatus())
+            if (!await CheckStatus(user))
                 return;
 
             InputSimulator input = new InputSimulator();
@@ -82,10 +82,10 @@ namespace WebMatBot
             input.Keyboard.KeyUp(WindowsInput.Native.VirtualKeyCode.MENU);
         }
 
-        private static async Task<bool> CheckStatus()
+        private static async Task<bool> CheckStatus(string user)
         {
             if (!isActive)
-                await IrcEngine.Respond("A mudança de tela está desativada, peça o streamer para ativá-la.");
+                await IrcEngine.Respond("A mudança de tela está desativada, peça o streamer para ativá-la.", user);
 
             return isActive;
         }

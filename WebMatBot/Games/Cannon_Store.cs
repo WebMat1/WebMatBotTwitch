@@ -63,7 +63,7 @@ namespace WebMatBot.Games
         {
             //significa que mercado ta fechado...
             if (State != Cannon.Status.Enabled)
-                await IrcEngine.Respond("@" + user + "... O mercado de Balas de Canhão está fechado =/, mesmo assim, muito obrigado por ser Sub =) ... VoHiYo VoHiYo ");
+                await IrcEngine.Respond("O mercado de Balas de Canhão está fechado =/, mesmo assim, muito obrigado por ser Sub =) ... VoHiYo VoHiYo ", user);
             else
             {
                 if (!await CanSubGift(user))
@@ -87,7 +87,7 @@ namespace WebMatBot.Games
 
                 if (result != null) //tudo certo, adiquiriu a bala
                 {
-                    await IrcEngine.Respond(result);
+                    await IrcEngine.Respond(result, user);
                 }
                 
             }
@@ -99,7 +99,7 @@ namespace WebMatBot.Games
         { 
             //significa que mercado ta fechado...
             if (State != Cannon.Status.Enabled)
-                await IrcEngine.Respond("@"+user+"... O mercado de Balas de Canhão está fechado =/, mesmo assim, muito obrigado pelos Bits =) ... VoHiYo VoHiYo ");
+                await IrcEngine.Respond("O mercado de Balas de Canhão está fechado =/, mesmo assim, muito obrigado pelos Bits =) ... VoHiYo VoHiYo ",user);
             else
             {
 
@@ -107,7 +107,7 @@ namespace WebMatBot.Games
 
                 if (result != null) //tudo certo, adiquiriu a bala
                 {
-                    await IrcEngine.Respond(result);
+                    await IrcEngine.Respond(result,user);
                 }
             }
         }
@@ -159,7 +159,7 @@ namespace WebMatBot.Games
                 await IrcEngine.Whisper(user, "@" + user + "... Você possui as skins: " + String.Join(" ", myTypes.Select(q => q.ToString()))+"... Use o !Equip [nome da skin] para ativá-la...");
         }
 
-        public static async Task SubEnterResource(string user) => await SubEnterResource(user);
+        public static async Task SubEnterResource(string user) => await SubEnter(user);
 
         public enum TypePayment
         {
